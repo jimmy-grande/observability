@@ -1,0 +1,9 @@
+{
+  "name": "@observability/logging",
+  "version": "0.0.1",
+  "description": "Reusable logger for nodejs apps",
+  "main": "index.js",
+  "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
+  "license": "MIT",
+  "private": true  
+}

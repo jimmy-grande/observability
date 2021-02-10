@@ -1,0 +1,14 @@
+{
+  "name": "@observability/tracing",
+  "version": "0.0.1",
+  "description": "Extended tracing based on elastic-apm-node",
+  "main": "index.js",
+  "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "couchbase": "^3.1.1",
+    "kafkajs": "^1.15.0",
+    "typescript": "^4.1.3"
+  }
+}
