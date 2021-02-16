@@ -1,11 +1,10 @@
 import agent, { endTransaction } from 'elastic-apm-node'
 import { Agent } from '../models'
-import { wrapWithAgent, asyncWrapWithAgent } from './wrap'
+import { wrapWithAgent } from './wrap'
 
 jest.mock('elastic-apm-node')
 
 const observableFunction = wrapWithAgent(agent)
-const asyncObservableFunction = asyncWrapWithAgent(agent)
 
 describe('Create an observable function', () => {
   it('should start a span and execute a function', () => {
@@ -38,7 +37,7 @@ describe('Create an observable function', () => {
         end: endSpanMock,
       }),
     }))
-    const observableFunction = asyncWrapWithAgent((mockAgent() as unknown) as Agent)
+    const observableFunction = wrapWithAgent((mockAgent() as unknown) as Agent)
     const message = 'I am an async string!'
     const mockAsyncStr = jest.fn(asyncStr)
     const asyncObsStr = observableFunction(mockAsyncStr)
@@ -52,7 +51,12 @@ describe('Create an observable function', () => {
   })
 
   it('should observe and execute a rejected asynchronous function', async () => {
-    const mockAsyncStr = jest.fn().mockRejectedValue(new Error('Test Error'))
+    const asyncStr = async (message: string): Promise<string> => {
+      await new Promise((_, reject) => {
+        setTimeout(() => reject('I need to reject'), 2000)
+      })
+      return message
+    }
     const captureErrorMock = jest.fn()
     const endSpanMock = jest.fn()
     const mockAgent = jest.fn().mockImplementation(() => ({
@@ -61,14 +65,11 @@ describe('Create an observable function', () => {
         end: endSpanMock,
       }),
     }))
-    const observableFunction = asyncWrapWithAgent((mockAgent() as unknown) as Agent)
-    const asyncObsStr = observableFunction(mockAsyncStr)
-    try {
-      await asyncObsStr('Some string')
-    } catch (error) {
-      expect(mockAsyncStr).toHaveBeenCalledWith('Some string')
-      expect(captureErrorMock).toHaveBeenCalled()
-      expect(endSpanMock).toHaveBeenCalled()
-    }
+    const observableFunction = wrapWithAgent((mockAgent() as unknown) as Agent)
+    const asyncObsStr = observableFunction(asyncStr)
+
+    await asyncObsStr('Some string')
+    expect(captureErrorMock).toHaveBeenCalled()
+    expect(endSpanMock).toHaveBeenCalled()
   })
 })

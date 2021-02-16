@@ -1,8 +1,7 @@
 import agent from 'elastic-apm-node'
-import { wrapWithAgent, asyncWrapWithAgent } from './features/wrap'
+import { wrapWithAgent } from './features/wrap'
 
 // agent.addPatch('couchbase', couchbaseHandler)
 const wrap = wrapWithAgent(agent)
-const asyncWrap = asyncWrapWithAgent(agent)
 
-export { agent, wrap, asyncWrap }
+export { agent, wrap }
