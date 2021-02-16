@@ -1,16 +1,20 @@
 {
-    "packages": ["packages/*", "website"],
-    "version": "independent",
-    "npmClient": "yarn",
-    "useWorkspaces": true,
-    "registry": "https://registry.npmjs.org/",
-    "command": {
-      "version": { "exact": true },
-      "publish": {
-        "conventionalCommits": true,
-        "message": "chore(release): publish",
-        "ignoreChanges": ["**/*.spec.ts", "**/tests/**"],
-        "allowBranch": "main"
-      }
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "registry": "https://registry.npmjs.org/",
+  "command": {
+    "publish": {
+      "tempTag": true
+    },
+    "version": {
+      "allowBranch": "main",
+      "conventionalCommits": true,
+      "createRelease": "github",
+      "exact": true,
+      "ignoreChanges": ["**/*.spec.ts", "**/tests/**", "**/*.md"],
+      "message": "chore(release): %s"
     }
-  }
+  },
+  "packages": ["packages/*", "website"]
+}

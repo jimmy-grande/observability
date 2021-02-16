@@ -1,14 +1,23 @@
 {
   "name": "@observability/tracing",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Extended tracing based on elastic-apm-node",
-  "main": "index.js",
   "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
   "license": "MIT",
-  "private": true,
   "devDependencies": {
     "couchbase": "^3.1.1",
     "kafkajs": "^1.15.0",
     "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "elastic-apm-node": "^3.11.0"
+  },
+  "scripts": {
+    "sample": "ts-node ./src/index.ts",
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf ./dist/",
+    "test:watch": "ENVIRONMENT=test && yarn ts-test --watchAll",
+    "ts-test": "ts-node jest",
+    "test": "jest --detectOpenHandles --watchAll --colors "
   }
 }

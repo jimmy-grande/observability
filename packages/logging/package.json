@@ -5,5 +5,7 @@
   "main": "index.js",
   "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
   "license": "MIT",
-  "private": true  
+  "dependencies": {
+    "@observability/tracing": "^1.0.0"
+  }
 }
