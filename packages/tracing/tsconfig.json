@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "resolveJsonModule": true
-  }
+    "declaration": true,
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "typeRoots": ["./@types", "./node_modules/@types"]
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "tests"]
 }
