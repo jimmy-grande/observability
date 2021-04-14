@@ -2,18 +2,12 @@ import couchbase from 'couchbase'
 import { wrapWithAgent } from '../../features/wrap'
 import { Handler } from '../../models'
 
-/* TODO:
- * [x] Handle subdocument
- * [x] Handle MutateInSpec
- */
-
-/*
+/**
  * typescript definitions for couchbase does not expose the real exports from couchbase.js
  * so I decided to typed the handler with an any type
  * TODO: find a way to improve couchbase typings
  */
-export const couchbaseHandler: Handler<any> = (exports, agent, options) => {
-  console.log('OPTIONS:::', options)
+export const couchbaseHandler: Handler<any> = (exports, agent, options) => {  
   if (!options.enabled || !options.version?.startsWith('3')) {
     return exports
   }
@@ -138,6 +132,7 @@ export const couchbaseHandler: Handler<any> = (exports, agent, options) => {
     action: 'connect',
     name: 'Init cluster connection',
   })
+  
   exports.connect = connect
   exports.Cluster.prototype.bucket = newBucket
   exports.Collection.prototype.get = newCollectionGet

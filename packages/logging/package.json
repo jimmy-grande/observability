@@ -5,7 +5,16 @@
   "main": "index.js",
   "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  },
   "dependencies": {
-    "@observability/tracing": "^1.0.0"
+    "pino": "6.11.2",
+    "pino-kafka": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/pino": "^6.3.6",
+    "pino-pretty": "^4.7.1"
   }
 }
