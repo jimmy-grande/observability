@@ -1,6 +1,13 @@
-export interface LoggerModule {
-  create: CreateLogger
+export enum TransportType {
+  FILE = 'file',
+  KAFKA = 'kafka',
+  STDOUT = 'stdout',
 }
 
-type CreateLogger = (options: unknown) => Logger
-// export type LoggerOptions = pino.LoggerOptions
+export enum Environment {
+  LOCAL = 'local',
+  DEV = 'dev',
+  QA = 'qa',
+  PREPROD = 'preprod',
+  PROD = 'prod',
+}

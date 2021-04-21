@@ -6,7 +6,9 @@
   "author": "JIMMY GRANDE <jimmy.grande@outlook.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node ./src/index.ts"
+    "start:file": "export LOG_TRANSPORT=file && export LOG_PATH=\"./logs/\" && ts-node ./src/index.ts",
+    "start:kafka": "export LOG_TRANSPORT=kafka && export LOG_BROKER=127.0.0.1:9092 && export LOG_TOPIC=app-log && ts-node ./src/index.ts",
+    "start:stdout": "export LOG_TRANSPORT=stdout && ts-node ./src/index.ts"
   },
   "dependencies": {
     "pino": "6.11.2",

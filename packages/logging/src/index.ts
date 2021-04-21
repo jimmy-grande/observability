@@ -1,7 +1,7 @@
 import { agent } from '@observability/tracing'
-import pino, { destination } from 'pino'
+import pino from 'pino'
 import kafkaTransport from 'pino-kafka'
-import { Writable } from 'stream'
+import { TransportType } from './models/core'
 
 const prettyPrint: pino.PrettyOptions = {
   translateTime: true,
@@ -24,46 +24,48 @@ const defaultOptions: pino.LoggerOptions = {
       ...agentProps,
     }
   },
+
   formatters: {
     level: (level, num) => ({
       level,
     }),
   },
   level: 'debug',
-  prettyPrint: false,
-  // process.env.NODE_ENV === 'local' || process.env.NODE_ENV === undefined ? prettyPrint : false,
+  prettyPrint:
+    process.env.LOG_TRANSPORT !== TransportType.KAFKA &&
+    (process.env.NODE_ENV === 'local' || process.env.NODE_ENV === undefined)
+      ? prettyPrint
+      : false,
 }
-const logger = pino(
-  defaultOptions,
-  kafkaTransport({
-    brokers: 'localhost:9092',
-    defaultTopic: 'app-logs',
-  }),
-)
-
-logger.warn(process.env, 'Sample warn')
-logger.error('Sample error')
-logger.fatal('Sample fata')
-/**
- * Kafka
- * File
- * STDIN
- */
-type CreateInstance = (options: pino.LoggerOptions, destination?: string | Writable) => pino.Logger
-const createInstance: CreateInstance = options => {
-  let dest: pino.DestinationStream | undefined
-  if (typeof destination === 'string') {
-    dest = pino.destination({
-      dest: destination,
+let transport: pino.DestinationStream
+switch (process.env.LOG_TRANSPORT as TransportType) {
+  case TransportType.FILE:
+    console.log('INFO', __dirname, process.cwd())
+    transport = pino.destination({
+      dest: `${process.env.LOG_PATH || process.cwd()}`, // TODO: make it work with another path
+      sync: false,
     })
-  }
-
-  if (destination instanceof Writable) {
-    dest = destination as Writable
-  }
-  const args = [{ ...defaultOptions, ...options }, dest]
-  return pino(...args)
+    break
+  case TransportType.KAFKA:
+    if (!process.env.LOG_BROKER || !process.env.LOG_TOPIC) {
+      console.warn(
+        'Missing kafka configuration.\r\n You should provide at least these 2 environment variables: %s, %s.\r\nSwitching to default transport.',
+        'LOG_BROKER',
+        'LOG_TOPIC',
+      )
+      transport = pino.destination(process.stdout.fd)
+    } else {
+      transport = kafkaTransport({
+        brokers: process.env.LOG_BROKER,
+        defaultTopic: process.env.LOG_TOPIC,
+      })
+    }
+    break
+  case TransportType.STDOUT:
+  default:
+    transport = pino.destination(process.stdout.fd)
+    break
 }
-export { createInstance, logger }
+const logger = pino(defaultOptions, transport)
 
-process.stdin.resume()
+export default logger
